@@ -1,0 +1,96 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "UNO Q: Verificar conexion",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "estado"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Enviar y compilar",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "compilar"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Enviar e iniciar registro",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "iniciar"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Detener registro",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "detener"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Ver logs",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "logs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Descargar CSV",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "descargar"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "UNO Q: Sincronizar CSV en vivo",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "${workspaceFolder}/uno_q.py",
+        "seguir"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
