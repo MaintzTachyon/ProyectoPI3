@@ -17,15 +17,20 @@ LOCAL_CSV = ROOT / "datos" / "datos_hall.csv"
 
 def find_adb():
     candidate = os.environ.get("ADB") or shutil.which("adb")
-    if not candidate:
-        candidate = ROOT / ".tools" / "adb" / "adb"
-    if not Path(candidate).is_file():
-        raise RuntimeError("No se encontro ADB. Instalar android-tools o definir ADB con su ruta.")
-    return str(candidate)
+    if candidate:
+        return candidate
+    # Copias locales: adb (Linux/macOS) o adb.exe (Windows, platform-tools).
+    for name in ("adb", "adb.exe", "platform-tools/adb", "platform-tools/adb.exe"):
+        local = ROOT / ".tools" / "adb" / name
+        if local.is_file():
+            return str(local)
+    raise RuntimeError("No se encontro ADB. Instalar platform-tools/android-tools o definir ADB con su ruta.")
 
 
 def run(args, capture=False, timeout=120):
-    return subprocess.run(args, check=True, text=True, capture_output=capture, timeout=timeout)
+    # UTF-8 explicito: en Windows la codificacion por defecto no es UTF-8.
+    return subprocess.run(args, check=True, text=True, encoding="utf-8", errors="replace",
+                          capture_output=capture, timeout=timeout)
 
 
 class UnoQ:
@@ -64,13 +69,20 @@ class UnoQ:
         text = result.stdout
         text = text[:text.rfind("\n") + 1]
         rows = list(csv.reader(io.StringIO(text)))
-        if not rows or rows[0][:2] != ["sesion", "registro"] or any(len(r) != 11 for r in rows):
+        if not rows or rows[0][:2] != ["sesion", "registro"]:
             raise RuntimeError("CSV remoto incompleto o incompatible; se conserva la copia local.")
+        # Una fila cortada por un apagon no debe bloquear la copia para siempre:
+        # se omiten las filas con otra cantidad de columnas (y lineas vacias).
+        header, data = rows[0], rows[1:]
+        valid = [r for r in data if len(r) == len(header)]
+        skipped = len(data) - len(valid)
         LOCAL_CSV.parent.mkdir(exist_ok=True)
         temporary = LOCAL_CSV.with_suffix(".csv.tmp")
-        temporary.write_text(text, encoding="utf-8")
+        with temporary.open("w", newline="", encoding="utf-8") as archivo:
+            csv.writer(archivo).writerows([header] + valid)
         temporary.replace(LOCAL_CSV)
-        print("CSV local: %s | %d registros" % (LOCAL_CSV, len(rows) - 1), flush=True)
+        aviso = " | %d filas incompletas omitidas" % skipped if skipped else ""
+        print("CSV local: %s | %d registros%s" % (LOCAL_CSV, len(valid), aviso), flush=True)
 
 
 def main():

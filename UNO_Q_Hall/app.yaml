@@ -8,7 +8,7 @@ name: hall-ky024
 description: "Registro CSV del sensor Hall KY-024"
 
 # The icon for the application, can be an emoji or a short string.
-icon: 
+icon: "🧲"
 
 # A list of network ports that the application exposes.
 # Example: [80, 443]
